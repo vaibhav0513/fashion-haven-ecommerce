@@ -9,7 +9,7 @@ const Footer = () => {
         <div>
           <img src={assets.logo5} className='mb-5 w-24' alt="" />
           <p className='w-full md:w-2/3 text-gray-600'>
-          At <span className='font-bold text-red-600'>FashionHaven</span>, we are driven by our desire to make online shopping not just a transaction, but an experience. We strive to stay ahead of the trends, offering the latest and most innovative products, all while maintaining the highest standards of customer service.
+          At <span className='font-bold text-red-600'>EzyKart</span>, we are driven by our desire to make online shopping not just a transaction, but an experience. We strive to stay ahead of the trends, offering the latest and most innovative products, all while maintaining the highest standards of customer service.
           </p>
         </div>
 

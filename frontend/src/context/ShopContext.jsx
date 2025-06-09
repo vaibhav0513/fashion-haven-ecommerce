@@ -105,20 +105,21 @@ const ShopContextProvider = (props) => {
     return totalAmount;
   }
 
-  const getProductsData = async () => {
-    try {
-      const response = await axios.get(backendUrl + '/api/product/list')
-      if(response.data.success) {
-        setProducts(response.data.products)
-      } else {
-        toast.error(response.data.message)
-      }
-    } catch (error) {
-      console.log(error);
-      toast.error(error.message)
-      
+const getProductsData = async () => {
+  try {
+    const response = await axios.get(backendUrl + '/api/product/list')
+    console.log("Fetched products:", response.data); // <-- check this
+    if(response.data.success) {
+      setProducts(response.data.products)
+    } else {
+      toast.error(response.data.message)
     }
+  } catch (error) {
+    console.log("Product fetch error:", error); // <-- check this too
+    toast.error(error.message)
   }
+}
+
 
   const getUserCart = async ( token ) => {
     try {
