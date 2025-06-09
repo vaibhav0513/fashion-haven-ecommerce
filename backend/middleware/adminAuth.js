@@ -1,20 +1,46 @@
-import jwt from 'jsonwebtoken'
+import jwt from 'jsonwebtoken';
 
-const adminAuth = async (req, res,next) => {
+const adminAuth = (req, res, next) => {
   try {
-    const { token } =  req.headers
-    if (!token) {
-      return res.json({success: false, message:"Not Authorized Login Again"})
-    }
-    const token_decode = jwt.verify(token, process.env.JWT_SECRET);
-    if (token_decode !== process.env.ADMIN_EMAIL + process.env.ADMIN_PASSWORD) {
-      return res.json({success: false, message:"Not Authorized Login Again"})
-    }
-    next()
-  } catch (error) {
-    console.log(error);
-    res.json({success:false, message:error.message})
-  }
-}
+    // Check for Authorization header
+    const authHeader = req.headers.authorization;
 
-export default adminAuth
+    // If no header or header doesn't start with 'Bearer ', reject
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({
+        success: false,
+        message: 'No token provided, authorization denied',
+      });
+    }
+
+    // Extract the token from header
+    const token = authHeader.split(' ')[1];
+
+    // Verify the token with your JWT secret
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // Check if decoded token contains admin role or matches admin email
+    if (decoded.role !== 'admin' && decoded.email !== process.env.ADMIN_EMAIL) {
+      return res.status(403).json({
+        success: false,
+        message: 'Not authorized as admin',
+      });
+    }
+
+    // Attach decoded admin info to request object for downstream use
+    req.admin = decoded;
+
+    // All good, continue
+    next();
+  } catch (error) {
+    console.error('Auth middleware error:', error.message);
+
+    // Token invalid or expired
+    return res.status(401).json({
+      success: false,
+      message: 'Token is not valid or expired',
+    });
+  }
+};
+
+export default adminAuth;
