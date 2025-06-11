@@ -1,24 +1,27 @@
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { useNavigate } from "react-router-dom"; // 🔁 Step 1
 
 const AdminLogin = ({ setToken }) => {
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate(); // 🔁 Step 2
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await axios.post(`${backendUrl}/api/admin/login`, {
+      const response = await axios.post(`${backendUrl}/admin/login`, {
         email,
         password,
       });
       if (response.data.success) {
         setToken(response.data.token);
         toast.success("Logged in successfully!");
+        navigate("/dashboard"); // 🔁 Step 3
       } else {
         toast.error(response.data.message || "Login failed");
       }

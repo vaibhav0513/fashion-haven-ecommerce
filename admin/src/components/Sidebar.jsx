@@ -3,43 +3,40 @@ import { NavLink } from "react-router-dom";
 import { assets } from "../assets/assets";
 
 const Sidebar = () => {
+  const links = [
+    { to: "/dashboard", label: "Dashboard", icon: assets.order_icon },
+    { to: "/users", label: "All Users", icon: assets.order_icon },
+    { to: "/add", label: "Add Items", icon: assets.add_icon },
+    { to: "/list", label: "List Items", icon: assets.order_icon },
+    { to: "/orders", label: "Orders", icon: assets.order_icon },
+  ];
+
   return (
-    <div className="w-[18%] min-h-screen border-r-2">
-      <div className="flex flex-col gap-4 pt-6 pl-[20%] text-[15px]">
-        <NavLink
-          className="flex items-center gap-3 border border-gray-300 border-r-0 px-3 py-2 rounded-lg"
-          to="/users"
-        >
-          <img className="w-5 h-5" src={assets.order_icon} alt="" />
-          <p className="hidden md:block">All Users</p>
-        </NavLink>
-        <NavLink
-          className="flex items-center gap-3 border border-gray-300 border-r-0 px-3 py-2 rounded-lg"
-          to="/add"
-        >
-          <img className="w-5 h-5" src={assets.add_icon} alt="" />
-          <p className="hidden md:block">Add Items</p>
-        </NavLink>
+    <aside className="fixed top-0  left-0 h-full w-56 bg-white border-r z-40 hidden md:flex flex-col">
+      {/* Company Name */}
+      <div className="h-14 flex items-center justify-center"></div>
 
-        <NavLink
-          className="flex items-center gap-3 border border-gray-300 border-r-0 px-3 py-2 rounded-lg"
-          to="/list"
-        >
-          <img className="w-5 h-5" src={assets.order_icon} alt="" />
-          <p className="hidden md:block">List Items</p>
-        </NavLink>
-
-        <NavLink
-          className="flex items-center gap-3 border border-gray-300 border-r-0 px-3 py-2 rounded-lg"
-          to="/orders"
-        >
-          <img className="w-5 h-5" src={assets.order_icon} alt="" />
-          <p className="hidden md:block">Orders</p>
-        </NavLink>
-
-        
+      {/* Navigation Links */}
+      <div className="px-3 py-4 space-y-2 flex-1 overflow-y-auto">
+        {links.map((link) => (
+          <NavLink
+            key={link.to}
+            to={link.to}
+            className={({ isActive }) =>
+              `flex items-center gap-2 px-3 py-1.5 rounded-md transition 
+              ${
+                isActive
+                  ? "bg-pink-100 text-pink-600 font-medium"
+                  : "hover:bg-gray-100 text-gray-700"
+              }`
+            }
+          >
+            <img src={link.icon} alt="" className="w-4 h-4" />
+            <span>{link.label}</span>
+          </NavLink>
+        ))}
       </div>
-    </div>
+    </aside>
   );
 };
 

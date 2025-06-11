@@ -14,7 +14,7 @@ const About = () => {
       <div className='my-10 flex flex-col md:flex-row gap-16'>
         <img className='w-full md:max-w-[450px]' src={assets.about_img} alt="" />
         <div className='flex flex-col justify-center gap-6 md:w-2/4 text-gray-600'>
-        <p>We are <span className='font-bold text-red-600'>FashionHaven</span>, a dedicated team passionate about bringing you the best products at unbeatable prices. Our journey began with a simple idea: to create an online shopping experience that is both enjoyable and convenient. Since our inception, we have grown into a trusted name in the industry, known for our commitment to quality and customer satisfaction.</p>
+        <p>We are <span className='font-bold text-red-600'>ezyKart</span>, a dedicated team passionate about bringing you the best products at unbeatable prices. Our journey began with a simple idea: to create an online shopping experience that is both enjoyable and convenient. Since our inception, we have grown into a trusted name in the industry, known for our commitment to quality and customer satisfaction.</p>
         <p>What started as a small venture has now become a platform that serves thousands of happy customers. Our founders, driven by their love for innovation and service, built this company from the ground up, with the aim of making top-quality products accessible to everyone.</p>
         <b className='text-gray-800'>Our Mission</b>
         <p>Our mission is to provide our customers with a seamless shopping experience by offering a wide range of high-quality products at competitive prices. We aim to redefine the way people shop online by delivering exceptional service, building lasting relationships, and ensuring that every customer feels valued.</p>

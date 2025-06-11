@@ -26,13 +26,11 @@ const Users = () => {
 
   return (
     <div className="p-1">
-      <h2 className="text-xl  text-gray-600 mb-3 flex items-center gap-2">
-        <FaUser className="text-gray-500" /> All Registered Users
-      </h2>
+      <p className="text-xl font-bold mb-6 text-gray-800">All Registered Users</p>
 
       <div className="overflow-x-auto bg-white shadow-lg rounded-lg border border-gray-200">
         <table className="min-w-full divide-y divide-gray-200 text-sm text-gray-700">
-          <thead className="bg-gray-100">
+          <thead className="bg-pink-100">
             <tr>
               <th className="px-6 py-3 text-left font-semibold">User ID</th>
               <th className="px-6 py-3 text-left font-semibold">Name</th>

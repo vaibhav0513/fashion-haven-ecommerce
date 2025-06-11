@@ -6,6 +6,8 @@ import { backendUrl } from "../App";
 import { toast } from "react-toastify";
 
 const Add = ({ token }) => {
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
+  const [loading, setLoading] = useState(false); // Add this state
   const [image1, setImage1] = useState(false);
   const [image2, setImage2] = useState(false);
   const [image3, setImage3] = useState(false);
@@ -21,10 +23,9 @@ const Add = ({ token }) => {
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
-
+    setLoading(true);
     try {
       const formData = new FormData();
-
       formData.append("name", name);
       formData.append("description", description);
       formData.append("price", price);
@@ -39,17 +40,16 @@ const Add = ({ token }) => {
       image4 && formData.append("image4", image4);
 
       const response = await axios.post(
-        backendUrl + "/api/product/add",
+        `${backendUrl}/admin/products`, // ✅ Updated endpoint
         formData,
         {
           headers: {
-            Authorization: `Bearer ${token}`, // <-- this is the correct format
-            "Content-Type": "multipart/form-data", // recommended for file uploads
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
           },
         }
       );
 
-      // console.log(response.data);
       if (response.data.success) {
         toast.success(response.data.message);
         setName("");
@@ -65,6 +65,8 @@ const Add = ({ token }) => {
     } catch (error) {
       console.log(error);
       toast.error(error.message);
+    } finally {
+      setLoading(false); // End loading in all cases
     }
   };
 
@@ -74,8 +76,7 @@ const Add = ({ token }) => {
       className="flex flex-col w-full items-start gap-3 "
     >
       <div>
-        <p className="mb-2">Upload Image</p>
-
+        <p className="text-xl font-bold mb-6 text-gray-800">Upload Image</p>
         <div className="flex gap-2">
           <label htmlFor="image1">
             <img
@@ -302,9 +303,17 @@ const Add = ({ token }) => {
         </label>
       </div>
 
-      <button type="submit" className="w-28 py-3 mt-4 bg-black text-white">
+      {/* <button type="submit" className="w-28 py-3 mt-4 bg-black text-white">
         ADD
-      </button>
+      </button> */}
+      <button
+  type="submit"
+  disabled={loading}
+  className={`w-28 py-3 mt-4 text-white ${loading ? "bg-gray-500" : "bg-black"} `}
+>
+  {loading ? "Uploading..." : "ADD"}
+</button>
+
     </form>
   );
 };

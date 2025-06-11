@@ -47,41 +47,42 @@ const Login = () => {
   // };
 
   // User redirect Home Page
-  
+
   const onSubmitHandler = async (event) => {
-  event.preventDefault();
-  try {
-    let response;
-    if (currentState === "Sign Up") {
-      response = await axios.post(backendUrl + "/api/user/register", {
-        name,
-        email,
-        password,
-      });
-    } else {
-      response = await axios.post(backendUrl + "/api/user/login", {
-        email,
-        password,
-      });
-    }
-
-    if (response.data.success) {
-      setToken(response.data.token);
-      localStorage.setItem("token", response.data.token);
-
-      const userId = response.data.userId || (response.data.user && response.data.user.userId);
-      if(userId) {
-        localStorage.setItem("userId", userId);
+    event.preventDefault();
+    try {
+      let response;
+      if (currentState === "Sign Up") {
+        response = await axios.post(backendUrl + "/api/user/register", {
+          name,
+          email,
+          password,
+        });
+      } else {
+        response = await axios.post(backendUrl + "/api/user/login", {
+          email,
+          password,
+        });
       }
-    } else {
-      toast.error(response.data.message);
-    }
-  } catch (error) {
-    console.log(error);
-    toast.error(error.message);
-  }
-};
 
+      if (response.data.success) {
+        setToken(response.data.token);
+        localStorage.setItem("token", response.data.token);
+
+        const userId =
+          response.data.userId ||
+          (response.data.user && response.data.user.userId);
+        if (userId) {
+          localStorage.setItem("userId", userId);
+        }
+      } else {
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message);
+    }
+  };
 
   useEffect(() => {
     if (token) {
@@ -132,14 +133,14 @@ const Login = () => {
         {currentState === "Login" ? (
           <p
             onClick={() => setCurrentState("Sign Up")}
-            className="cursor-pointer text-red-500"
+            className="cursor-pointer text-pink-600"
           >
             Create account?
           </p>
         ) : (
           <p
             onClick={() => setCurrentState("Login")}
-            className="cursor-pointer text-[#4F46E5]"
+            className="cursor-pointer text-pink-600"
           >
             Login Here
           </p>
