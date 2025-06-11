@@ -15,12 +15,16 @@ export const currency = "₹";
 
 const App = () => {
   const [token, setToken] = useState(() => localStorage.getItem("token") || "");
-// const token = localStorage.getItem("token");
-{/* <Route path="/add" element={<Add token={token} />} /> */}
+  // const token = localStorage.getItem("token");
+  {
+    /* <Route path="/add" element={<Add token={token} />} /> */
+  }
 
   useEffect(() => {
     localStorage.setItem("token", token);
   }, [token]);
+  console.log(token);
+  
 
   return (
     <>

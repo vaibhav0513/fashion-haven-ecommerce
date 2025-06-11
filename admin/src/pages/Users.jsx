@@ -28,7 +28,7 @@ const Users = () => {
     <div className="p-1">
       <p className="text-xl font-bold mb-6 text-gray-800">All Registered Users</p>
 
-      <div className="overflow-x-auto bg-white shadow-lg rounded-lg border border-gray-200">
+      <div className="overflow-x-auto bg-white  rounded-lg border border-gray-200">
         <table className="min-w-full divide-y divide-gray-200 text-sm text-gray-700">
           <thead className="bg-pink-100">
             <tr>
