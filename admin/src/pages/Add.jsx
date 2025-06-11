@@ -307,13 +307,14 @@ const Add = ({ token }) => {
         ADD
       </button> */}
       <button
-  type="submit"
-  disabled={loading}
-  className={`w-28 py-3 mt-4 text-white ${loading ? "bg-gray-500" : "bg-black"} `}
->
-  {loading ? "Uploading..." : "ADD"}
-</button>
-
+        type="submit"
+        disabled={loading}
+        className={`w-28 py-3 mt-4 text-white ${
+          loading ? "bg-gray-500" : "bg-black"
+        } `}
+      >
+        {loading ? "Uploading..." : "ADD"}
+      </button>
     </form>
   );
 };

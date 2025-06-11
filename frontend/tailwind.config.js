@@ -12,6 +12,18 @@ export default {
         heading: "#111827", // Gray 900
         body: "#4b5563", // Gray 600
       },
+      animation: {
+      fadeIn: "fadeIn 0.2s ease-out forwards",
+    },
+    keyframes: {
+      fadeIn: {
+        "0%": { opacity: 0, transform: "translateY(-10%)" },
+        "100%": { opacity: 1, transform: "translateY(0)" },
+      },
+    },
+    fontFamily: {
+      sans: ['Inter', 'ui-sans-serif', 'system-ui'],
+    },
     },
   },
   plugins: [],

@@ -153,9 +153,9 @@ export const createProduct = async (req, res) => {
       bestseller,
       sizes,
     } = req.body;
-    console.log("data", req.body);
+    // console.log("data", req.body);
 
-    console.log("Raw sizes from req.body:", sizes);
+    // console.log("Raw sizes from req.body:", sizes);
 
     let parsedSizes = [];
 
