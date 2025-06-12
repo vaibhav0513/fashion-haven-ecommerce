@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 const adminAuth = (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
-    console.log("Authorization Header:", authHeader);
+    // console.log("Authorization Header:", authHeader);
 
     if (!authHeader || !authHeader.startsWith("Bearer")) {
       return res.status(401).json({
@@ -21,7 +21,7 @@ const adminAuth = (req, res, next) => {
     }
 
     const token = parts[1];
-    console.log("Token received:", token);
+    // console.log("Token received:", token);
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 

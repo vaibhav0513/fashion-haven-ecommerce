@@ -1,48 +1,45 @@
-import React, { useContext, useEffect } from 'react'
-import { ShopContext } from '../context/ShopContext'
-import { useSearchParams } from 'react-router-dom'
-import { backendUrl } from '../../../admin/src/App'
-import { toast } from 'react-toastify'
-import axios from 'axios'
+import React, { useContext, useEffect } from "react";
+import { ShopContext } from "../context/ShopContext";
+import { useSearchParams } from "react-router-dom";
+import { backendUrl } from "../../../admin/src/App";
+import { toast } from "react-toastify";
+import axios from "axios";
 
 const Verify = () => {
-  const { navigate, token, setCartItems}= useContext(ShopContext)
-  const [searchParams, setSearchParams] = useSearchParams()
+  const { navigate, token, setCartItems } = useContext(ShopContext);
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const success = searchParams.get('success')
-  const orderId = searchParams.get('orderId')
+  const success = searchParams.get("success");
+  const orderId = searchParams.get("orderId");
 
-  const verifyPayment = async () =>{
+  const verifyPayment = async () => {
     try {
       if (!token) {
-        return null
-        
+        return null;
       }
 
-      const response = await axios.post(backendUrl+ '/api/order/verifyStripe',{success, orderId}, {Headers:{ token }})
+      const response = await axios.post(
+        backendUrl + "/api/order/verifyStripe",
+        { success, orderId },
+        { Headers: { token } }
+      );
       if (response.data.success) {
-        setCartItems({})
-        navigate('/orders')
+        setCartItems({});
+        navigate("/orders");
       } else {
-        navigate('/cart')
+        navigate("/cart");
       }
     } catch (error) {
-      console.log(error)
-      toast.error(error.message)
+      console.log(error);
+      toast.error(error.message);
     }
-  }
+  };
 
-  useEffect(()=>{
-    verifyPayment()
-  },[token])
+  useEffect(() => {
+    verifyPayment();
+  }, [token]);
 
+  return <div>Verify</div>;
+};
 
-
-  return (
-    <div>
-      Verify
-    </div>
-  )
-}
-
-export default Verify
+export default Verify;

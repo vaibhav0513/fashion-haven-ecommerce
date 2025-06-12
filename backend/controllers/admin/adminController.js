@@ -1,7 +1,7 @@
 import ProductModel from "../../models/productModel.js";
 import UserModel from "../../models/userModel.js";
 import OrderModel from "../../models/orderModel.js";
-import AdminModel from "../../models/AdminModel.js"; // your admin schema/model
+import AdminModel from "../../models/AdminModel.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
@@ -78,8 +78,6 @@ export const adminLogin = async (req, res) => {
   }
 };
 
-// GET all products
-
 // GET all products with category-wise count
 export const getAllProducts = async (req, res) => {
   try {
@@ -139,8 +137,6 @@ export const getProductStats = async (req, res) => {
   }
 };
 
-
-
 // CREATE new product
 export const createProduct = async (req, res) => {
   try {
@@ -179,12 +175,11 @@ export const createProduct = async (req, res) => {
       images: [],
     });
 
-   const files = req.files || {};
-if (files.image1?.[0]) product.images.push(files.image1[0].path); // Cloudinary URL
-if (files.image2?.[0]) product.images.push(files.image2[0].path);
-if (files.image3?.[0]) product.images.push(files.image3[0].path);
-if (files.image4?.[0]) product.images.push(files.image4[0].path);
-
+    const files = req.files || {};
+    if (files.image1?.[0]) product.images.push(files.image1[0].path); // Cloudinary URL
+    if (files.image2?.[0]) product.images.push(files.image2[0].path);
+    if (files.image3?.[0]) product.images.push(files.image3[0].path);
+    if (files.image4?.[0]) product.images.push(files.image4[0].path);
 
     await product.save();
 
@@ -253,40 +248,5 @@ export const deleteUser = async (req, res) => {
     res
       .status(500)
       .json({ success: false, message: "Error deleting user", error });
-  }
-};
-
-// ========== ORDER MANAGEMENT ==========
-
-// GET all orders
-export const getAllOrders = async (req, res) => {
-  try {
-    const orders = await OrderModel.find().populate("user", "name email");
-    res.json({ success: true, orders });
-  } catch (error) {
-    res
-      .status(500)
-      .json({ success: false, message: "Error fetching orders", error });
-  }
-};
-
-// UPDATE order status
-export const updateOrderStatus = async (req, res) => {
-  try {
-    const order = await OrderModel.findById(req.params.id);
-    if (!order)
-      return res
-        .status(404)
-        .json({ success: false, message: "Order not found" });
-
-    order.status = req.body.status;
-    await order.save();
-    res.json({ success: true, message: "Order status updated", order });
-  } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: "Failed to update order status",
-      error,
-    });
   }
 };
