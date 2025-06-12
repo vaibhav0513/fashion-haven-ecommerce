@@ -18,7 +18,11 @@ const Add = ({ token }) => {
   const [price, setPrice] = useState("");
   const [category, setCategory] = useState("Men");
   const [subCategory, setSubCategory] = useState("Topwear");
-  const [bestseller, setBestseller] = useState("false");
+  // const [bestseller, setBestseller] = useState("false");
+  const [quantity, setQuantity] = useState("");
+
+  const [bestseller, setBestseller] = useState(false);
+
   const [sizes, setSizes] = useState([]);
 
   const onSubmitHandler = async (e) => {
@@ -31,7 +35,10 @@ const Add = ({ token }) => {
       formData.append("price", price);
       formData.append("category", category);
       formData.append("subCategory", subCategory);
+      // formData.append("bestseller", bestseller);
       formData.append("bestseller", bestseller);
+      formData.append("quantity", quantity);
+
       formData.append("sizes", JSON.stringify(sizes));
 
       image1 && formData.append("image1", image1);
@@ -186,6 +193,20 @@ const Add = ({ token }) => {
         </div>
 
         <div>
+          <p className="mb-2">Quantity</p>
+          <input
+            onChange={(e) => setQuantity(e.target.value)}
+            value={quantity}
+            className="w-full px-3 py-2 sm:w-[120px]"
+            type="number"
+            placeholder="10"
+            min="1"
+            step="1"
+            required
+          />
+        </div>
+
+        <div>
           <p className="mb-2">Product Price</p>
           <input
             onChange={(e) => setPrice(e.target.value)}
@@ -293,7 +314,7 @@ const Add = ({ token }) => {
 
       <div className="flex gap-2 mt-2">
         <input
-          onChange={() => setBestseller((prev) => !prev)}
+          onChange={(e) => setBestseller(e.target.checked)}
           checked={bestseller}
           type="checkbox"
           id="bestseller"

@@ -2,6 +2,7 @@
 import orderModel from "../models/orderModel.js";
 import userModel from "../models/userModel.js";
 import Stripe from "stripe";
+import productModel from "../models/productModel.js";
 
 // Global variables
 const currency = "usd";
@@ -10,10 +11,12 @@ const deliveryCharge = 10;
 // Gateway initialize
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-//  Placing orders using COD Mthod
 const placeOrder = async (req, res) => {
   try {
     const { userId, items, amount, address } = req.body;
+
+    console.log("Received items:", items);
+
     const orderData = {
       userId,
       items,
@@ -23,14 +26,41 @@ const placeOrder = async (req, res) => {
       payment: false,
       date: Date.now(),
     };
+
     const newOrder = new orderModel(orderData);
     await newOrder.save();
 
+    // Reduce product quantity
+    for (const item of items) {
+  const productId = item._id; // correct field
+  console.log("Finding product with ID:", productId);
+
+  const product = await productModel.findById(productId);
+
+  if (!product) {
+    console.log("Product not found:", productId);
+    continue;
+  }
+
+  if (product.quantity < item.quantity) {
+    return res.status(400).json({
+      success: false,
+      message: `Insufficient stock for ${product.name}`,
+    });
+  }
+
+  product.quantity -= item.quantity;
+  await product.save();
+  console.log(`✅ Updated quantity for ${product.name}: ${product.quantity}`);
+}
+
+
+    // Clear cart
     await userModel.findByIdAndUpdate(userId, { cartData: {} });
 
     res.json({ success: true, message: "Order Placed" });
   } catch (error) {
-    console.log(error);
+    console.error("Order placement failed:", error);
     res.json({ success: false, message: error.message });
   }
 };
@@ -90,13 +120,56 @@ const placeOrderStripe = async (req, res) => {
 };
 
 // Verify Stripe
+// const verifyStripe = async (req, res) => {
+//   const { orderId, success, userId } = req.body;
+
+//   try {
+//     if (success === "true") {
+//       await orderModel.findByIdAndUpdate(orderId, { payment: true });
+//       await userModel.findByIdAndUpdate(userId, { cartData: {} });
+//       res.json({ success: true });
+//     } else {
+//       await orderModel.findByIdAndDelete(orderId);
+//       res.json({ success: false });
+//     }
+//   } catch (error) {
+//     console.log(error);
+//     res.json({ success: false, message: error.message });
+//   }
+// };
+
 const verifyStripe = async (req, res) => {
   const { orderId, success, userId } = req.body;
 
   try {
     if (success === "true") {
-      await orderModel.findByIdAndUpdate(orderId, { payment: true });
+      const order = await orderModel.findById(orderId);
+      if (!order)
+        return res
+          .status(404)
+          .json({ success: false, message: "Order not found" });
+
+      order.payment = true;
+      await order.save();
+
+      // Reduce stock
+      for (const item of items) {
+        const product = await productModel.findById(item.productId);
+        if (product) {
+          if (product.quantity < item.quantity) {
+            return res.status(400).json({
+              success: false,
+              message: `Insufficient stock for ${product.name}`,
+            });
+          }
+          product.quantity -= item.quantity;
+          await product.save();
+        }
+      }
+
+      // Clear cart
       await userModel.findByIdAndUpdate(userId, { cartData: {} });
+
       res.json({ success: true });
     } else {
       await orderModel.findByIdAndDelete(orderId);

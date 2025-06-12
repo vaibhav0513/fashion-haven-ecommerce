@@ -150,10 +150,12 @@ import { useParams } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
 import { assets } from "../assets/assets";
 import RelatedProducts from "../components/RelatedProducts";
+import axios from 'axios'
 
 const Product = () => {
   const { productId } = useParams();
-  const { products, currency, addToCart } = useContext(ShopContext);
+  // const [products, ] = useState([]);
+  const { products,setProducts, currency, addToCart } = useContext(ShopContext);
   const [productData, setProductData] = useState(null);
   const [image, setImage] = useState("");
   const [size, setSize] = useState("");
@@ -165,6 +167,12 @@ const Product = () => {
       setImage(product.images[0]);
     }
   }, [productId, products]);
+
+  useEffect(() => {
+  axios.get('/api/products').then(res => {
+    setProducts(res.data.products.reverse()); // newest goes to last
+  });
+}, []);
 
   if (!productData) return <div className="text-center py-20">Loading...</div>;
 

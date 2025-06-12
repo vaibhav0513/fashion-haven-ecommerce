@@ -5,6 +5,13 @@ import AdminModel from "../../models/AdminModel.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
+function generateCustomProductId(category, subCategory) {
+  const catPrefix = category?.trim().toUpperCase().charAt(0); // M
+  const subCatPrefix = subCategory?.trim().slice(0, 3).toUpperCase(); // TOP
+  const randomNum = Math.floor(100000 + Math.random() * 900000); // 6-digit number
+  return `${catPrefix}${subCatPrefix}-${randomNum}`;
+}
+
 export const adminRegister = async (req, res) => {
   const { name, email, password } = req.body;
 
@@ -81,7 +88,9 @@ export const adminLogin = async (req, res) => {
 // GET all products with category-wise count
 export const getAllProducts = async (req, res) => {
   try {
-    const products = await ProductModel.find().sort({ date: -1 });
+    // const products = await ProductModel.find().sort({ date: -1 });
+    // Backend (already present):
+    const products = await ProductModel.find().sort({ createdAt: -1 });
 
     // Category-wise count using aggregation
     const categoryCount = await ProductModel.aggregate([
@@ -148,15 +157,15 @@ export const createProduct = async (req, res) => {
       subCategory,
       bestseller,
       sizes,
+      quantity,
     } = req.body;
-    // console.log("data", req.body);
 
-    // console.log("Raw sizes from req.body:", sizes);
-
+    // ✅ Parse and validate sizes
     let parsedSizes = [];
-
     try {
       parsedSizes = JSON.parse(sizes);
+      if (!Array.isArray(parsedSizes))
+        throw new Error("Sizes must be an array");
     } catch (err) {
       return res.status(400).json({
         success: false,
@@ -164,6 +173,16 @@ export const createProduct = async (req, res) => {
       });
     }
 
+    // ✅ Generate unique custom product ID
+    let customProductId;
+    let exists = true;
+    while (exists) {
+      customProductId = generateCustomProductId(category, subCategory);
+      const existing = await ProductModel.findOne({ customProductId });
+      if (!existing) exists = false;
+    }
+
+    // ✅ Create product
     const product = new ProductModel({
       name,
       description,
@@ -173,22 +192,27 @@ export const createProduct = async (req, res) => {
       bestseller: bestseller === "true",
       sizes: parsedSizes,
       images: [],
+      quantity: parseInt(quantity),
+      customProductId,
     });
 
+    // ✅ Handle uploaded images
     const files = req.files || {};
-    if (files.image1?.[0]) product.images.push(files.image1[0].path); // Cloudinary URL
-    if (files.image2?.[0]) product.images.push(files.image2[0].path);
-    if (files.image3?.[0]) product.images.push(files.image3[0].path);
-    if (files.image4?.[0]) product.images.push(files.image4[0].path);
+    ["image1", "image2", "image3", "image4"].forEach((key) => {
+      if (files[key]?.[0]) product.images.push(files[key][0].path);
+    });
 
+    // ✅ Save to DB
     await product.save();
 
-    return res
-      .status(201)
-      .json({ success: true, message: "Product created", product });
+    return res.status(201).json({
+      success: true,
+      message: "Product created",
+      product,
+    });
   } catch (error) {
     console.error("CREATE PRODUCT ERROR:", error);
-    res.status(400).json({
+    return res.status(400).json({
       success: false,
       message: "Failed to create product",
       error: error.message,
@@ -222,6 +246,37 @@ export const deleteProduct = async (req, res) => {
     res
       .status(500)
       .json({ success: false, message: "Error deleting product", error });
+  }
+};
+
+// SEARCH products by customProductId or name
+export const searchProducts = async (req, res) => {
+  const { query } = req.query;
+
+  try {
+    if (!query) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Query is required" });
+    }
+
+    const regex = new RegExp(query, "i"); // Case-insensitive search
+
+    const products = await ProductModel.find({
+      $or: [{ customProductId: regex }, { name: regex }],
+    }).sort({ createdAt: -1 });
+
+    res.json({
+      success: true,
+      results: products.length,
+      products,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error searching products",
+      error: error.message,
+    });
   }
 };
 
