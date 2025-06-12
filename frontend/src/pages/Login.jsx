@@ -3,8 +3,11 @@ import { ShopContext } from "../context/ShopContext";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { useNotification } from "../context/NotificationProvider";
+
 
 const Login = () => {
+  const { triggerNotification } = useNotification();
   const [currentState, setCurrentState] = useState("Login");
   const { token, setToken, naviagte, backendUrl } = useContext(ShopContext);
   const navigate = useNavigate();
@@ -12,40 +15,6 @@ const Login = () => {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
-
-  // const onSubmitHandler = async (event) => {
-  //   event.preventDefault();
-  //   try {
-  //     if (currentState === "Sign Up") {
-  //       const response = await axios.post(backendUrl + "/api/user/register", {
-  //         name,
-  //         email,
-  //         password,
-  //       });
-  //       if (response.data.success) {
-  //         setToken(response.data.token);
-  //         localStorage.setItem("token", response.data.token);
-  //       } else {
-  //         toast.error(response.data.message);
-  //       }
-  //     } else {
-  //       const response = await axios.post(backendUrl + "/api/user/login", {
-  //         email,
-  //         password,
-  //       });
-  //       if (response.data.success) {
-  //         setToken(response.data.token);
-  //         localStorage.setItem("token", response.data.token);
-  //       } else {
-  //         toast.error(response.data.message);
-  //       }
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //     toast.error(error.message);
-  //   }
-  // };
-
   // User redirect Home Page
 
   const onSubmitHandler = async (event) => {
@@ -75,12 +44,20 @@ const Login = () => {
         if (userId) {
           localStorage.setItem("userId", userId);
         }
+        triggerNotification(
+        currentState === "Login"
+          ? "Login successful!"
+          : "Account created successfully!",
+        "success"
+      );
       } else {
-        toast.error(response.data.message);
+        // toast.error(response.data.message);
+         triggerNotification(response.data.message || "Something went wrong!", "error");
       }
     } catch (error) {
       console.log(error);
-      toast.error(error.message);
+      // toast.error(error.message);
+      triggerNotification(error.response?.data?.message || error.message, "error");
     }
   };
 
