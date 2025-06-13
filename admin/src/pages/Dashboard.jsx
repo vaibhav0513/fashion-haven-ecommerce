@@ -47,7 +47,7 @@ const Dashboard = () => {
         );
         if (res.data.success) {
           setOrders(res.data.orders);
-          console.log("Fetched orders:", res.data.orders);
+          // console.log("Fetched orders:", res.data.orders);
         }
       } catch (error) {
         console.error("Order stats fetch error:", error);

@@ -1,10 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
 import { ShopContext } from "../context/ShopContext";
 import axios from "axios";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useNotification } from "../context/NotificationProvider";
-
 
 const Login = () => {
   const { triggerNotification } = useNotification();
@@ -45,19 +44,25 @@ const Login = () => {
           localStorage.setItem("userId", userId);
         }
         triggerNotification(
-        currentState === "Login"
-          ? "Login successful!"
-          : "Account created successfully!",
-        "success"
-      );
+          currentState === "Login"
+            ? "Login successful!"
+            : "Account created successfully!",
+          "success"
+        );
       } else {
         // toast.error(response.data.message);
-         triggerNotification(response.data.message || "Something went wrong!", "error");
+        triggerNotification(
+          response.data.message || "Something went wrong!",
+          "error"
+        );
       }
     } catch (error) {
       console.log(error);
       // toast.error(error.message);
-      triggerNotification(error.response?.data?.message || error.message, "error");
+      triggerNotification(
+        error.response?.data?.message || error.message,
+        "error"
+      );
     }
   };
 

@@ -2,10 +2,12 @@ import React from "react";
 import { assets } from "../assets/assets";
 import { useState } from "react";
 import axios from "axios";
-import { backendUrl } from "../App";
-import { toast } from "react-toastify";
+// import { backendUrl } from "../App";
+// import { toast } from "react-toastify";
+import { useNotification } from "../context/NotificationProvider";
 
 const Add = ({ token }) => {
+  const { triggerNotification } = useNotification();
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
   const [loading, setLoading] = useState(false); // Add this state
   const [image1, setImage1] = useState(false);
@@ -58,7 +60,8 @@ const Add = ({ token }) => {
       );
 
       if (response.data.success) {
-        toast.success(response.data.message);
+        triggerNotification(response.data.message, "success");
+        // toast.success(response.data.message);
         setName("");
         setDescription("");
         setImage1(false);
@@ -67,11 +70,13 @@ const Add = ({ token }) => {
         setImage4(false);
         setPrice("");
       } else {
-        toast.error(response.data.message);
+        // toast.error(response.data.message);
+        triggerNotification(response.data.message, "error");
       }
     } catch (error) {
       console.log(error);
-      toast.error(error.message);
+      // toast.error(error.message);
+      triggerNotification(response.message, "success");
     } finally {
       setLoading(false); // End loading in all cases
     }

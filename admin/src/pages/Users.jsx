@@ -1,21 +1,26 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FaUser } from "react-icons/fa";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
+import { useNotification } from "../context/NotificationProvider";
 
 const Users = () => {
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
+  const { triggerNotification } = useNotification();
   const [users, setUsers] = useState([]);
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get("http://localhost:4000/api/admin/users");
+      const res = await axios.get(`${backendUrl}/admin/users`);
       if (res.data.success) {
         setUsers(res.data.users);
       } else {
-        toast.error("Failed to fetch users");
+        // toast.error("Failed to fetch users");
+        triggerNotification("Failed to fetch users", "error");
       }
     } catch (err) {
-      toast.error("Something went wrong");
+      // toast.error("Something went wrong");
+      triggerNotification("Something went wrong", "error");
       console.log(err);
     }
   };
@@ -26,7 +31,9 @@ const Users = () => {
 
   return (
     <div className="p-1">
-      <p className="text-xl font-bold mb-6 text-gray-800">All Registered Users</p>
+      <p className="text-xl font-bold mb-6 text-gray-800">
+        All Registered Users
+      </p>
 
       <div className="overflow-x-auto bg-white  rounded-lg border border-gray-200">
         <table className="min-w-full divide-y divide-gray-200 text-sm text-gray-700">

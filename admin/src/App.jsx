@@ -7,8 +7,9 @@ import Users from "./pages/Users";
 import Add from "./pages/Add";
 import List from "./pages/List";
 import Orders from "./pages/Orders";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+// import { ToastContainer } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
+import { NotificationProvider } from "./context/NotificationProvider";
 
 export const backendUrl = import.meta.env.VITE_BACKEND_URL;
 export const currency = "₹";
@@ -23,28 +24,29 @@ const App = () => {
   useEffect(() => {
     localStorage.setItem("token", token);
   }, [token]);
-  console.log(token);
-  
+  // console.log(token);
 
   return (
     <>
-      <ToastContainer />
-      <Routes>
-        {token ? (
-          <Route element={<Layout setToken={setToken} />}>
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/users" element={<Users />} />
-            <Route path="/add" element={<Add />} />
-            <Route path="/list" element={<List />} />
-            <Route path="/orders" element={<Orders />} />
-            <Route path="*" element={<Navigate to="/dashboard" />} />
-          </Route>
-        ) : (
-          <>
-            <Route path="*" element={<Login setToken={setToken} />} />
-          </>
-        )}
-      </Routes>
+      <NotificationProvider>
+        {/* <ToastContainer /> */}
+        <Routes>
+          {token ? (
+            <Route element={<Layout setToken={setToken} />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/users" element={<Users />} />
+              <Route path="/add" element={<Add />} />
+              <Route path="/list" element={<List />} />
+              <Route path="/orders" element={<Orders />} />
+              <Route path="*" element={<Navigate to="/dashboard" />} />
+            </Route>
+          ) : (
+            <>
+              <Route path="*" element={<Login setToken={setToken} />} />
+            </>
+          )}
+        </Routes>
+      </NotificationProvider>
     </>
   );
 };

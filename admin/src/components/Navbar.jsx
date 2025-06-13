@@ -4,6 +4,7 @@ const Navbar = ({ setToken }) => {
   const [showModal, setShowModal] = useState(false);
 
   const handleLogout = () => {
+    localStorage.clear(); 
     setToken("");
     setShowModal(false);
   };

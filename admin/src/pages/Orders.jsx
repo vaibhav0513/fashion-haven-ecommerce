@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
+import { useNotification } from "../context/NotificationProvider";
+
 import { assets } from "../assets/assets";
 import { currency } from "../App";
 
 const Orders = () => {
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
+  const { triggerNotification } = useNotification();
   const [orders, setOrders] = useState([]);
   //  const [orders, setOrders] = useState([]);
   const token = localStorage.getItem("token");
@@ -24,16 +27,21 @@ const Orders = () => {
         }
       );
 
-      console.log("Orders response:", response.data); // Debug log
+      // console.log("Orders response:", response.data);
 
       if (response.data.success) {
         setOrders(response.data.orders.reverse());
       } else {
-        toast.error(response.data.message || "Failed to load orders");
+        // toast.error(response.data.message || "Failed to load orders");
+        triggerNotification(
+          response.data.message || "Failed to load orders",
+          "error"
+        );
       }
     } catch (error) {
       console.log("Fetch error:", error);
-      toast.error(error.message);
+      // toast.error(error.message);
+      triggerNotification(error.message, "error");
     }
   };
 
@@ -48,11 +56,16 @@ const Orders = () => {
       if (response.data.success) {
         await fetchAllOrders();
       } else {
-        toast.error(response.data.message);
+        // toast.error(response.data.message);
+        triggerNotification(response.data.message, "error");
       }
     } catch (error) {
       console.log(error);
-      toast.error(error.response?.data?.message || "Failed to update status");
+      // toast.error(error.response?.data?.message || "Failed to update status");
+      triggerNotification(
+        error.response?.data?.message || "Failed to update status",
+        "error"
+      );
     }
   };
 
